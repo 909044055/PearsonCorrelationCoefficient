@@ -44,7 +44,7 @@ namespace Pearson
             var sum1Sq = SumSquaresCompareTo();
             var sum2Sq = SumSquaresCompareWith();
 
-            var pSum = SumProductsOfBothReviewers();
+            var pSum = SumProductsOfBothInput();
 
             var num = pSum - (sum1 * sum2 / n);
 
@@ -59,7 +59,7 @@ namespace Pearson
             return Math.Round(answer, 2);
         }
 
-        public double SumProductsOfBothReviewers()
+        public double SumProductsOfBothInput()
         {
             double sum = 0;
             for (int i = 0; i < CompareTo.Count(); i++)
