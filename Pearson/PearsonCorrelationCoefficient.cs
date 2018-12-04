@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 
 namespace Pearson
@@ -9,7 +8,6 @@ namespace Pearson
 
         private readonly double[] CompareTo;
         private readonly double[] CompareWith;
-        private List<string> similarTitles;
 
         public PearsonCorrelationCoefficient(double[] compareTo, double[] compareWith)
         {
@@ -19,6 +17,11 @@ namespace Pearson
 
         public double Score()
         {
+            if (CompareTo == null || CompareWith == null)
+            {
+                throw new Exception("param can not be null");
+            }
+
             if (CompareTo.Count() != CompareWith.Count())
             {
                 throw new Exception("two input param contain count is not same");
@@ -29,10 +32,10 @@ namespace Pearson
 
         private double CalculatePearsonCorrelationScore()
         {
-            var n = similarTitles.Count;
+            double n =  CompareTo.Count();
             if (n == 0)
             {
-                return 0.0;
+                return 0;
             }
 
             var sum1 = SumScoresCompareTo();
@@ -53,7 +56,7 @@ namespace Pearson
             }
 
             var answer = num / den;
-            return Math.Round(answer, 3);
+            return Math.Round(answer, 2);
         }
 
         public double SumProductsOfBothReviewers()
@@ -61,7 +64,7 @@ namespace Pearson
             double sum = 0;
             for (int i = 0; i < CompareTo.Count(); i++)
             {
-                sum += CompareTo[i] * CompareTo[i];
+                sum += CompareTo[i] * CompareWith[i];
             }
             return sum;
         }
@@ -81,7 +84,7 @@ namespace Pearson
             double sum = 0;
             for (int i = 0; i < CompareTo.Count(); i++)
             {
-                sum += Math.Pow(CompareWith[i], 2);
+                sum += Math.Pow(CompareTo[i], 2);
             }
             return sum;
         }
