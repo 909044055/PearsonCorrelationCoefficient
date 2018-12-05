@@ -20,12 +20,14 @@ namespace Pearson
         public PearsonCorrelationCoefficient(List<PearsonEntity<string>> pearsonEntities)
         {
             listCompareTo = new List<double>();
-            listCompareWith = new List<double>(); 
-
+            listCompareWith = new List<double>();
             foreach (var item in pearsonEntities)
             {
-                listCompareTo.Add(Convert.ToDouble(item.Col1));
-                listCompareWith.Add(Convert.ToDouble(item.Col2));
+                if (double.TryParse(item.Col1, out double tmpValue1) && double.TryParse(item.Col2, out double tmpValue2))
+                {
+                    listCompareTo.Add(Convert.ToDouble(item.Col1));
+                    listCompareWith.Add(Convert.ToDouble(item.Col2));
+                }
             }
 
             CompareTo = listCompareTo.ToArray();
