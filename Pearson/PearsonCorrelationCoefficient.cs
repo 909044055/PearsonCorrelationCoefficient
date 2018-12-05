@@ -8,7 +8,7 @@ namespace Pearson
     /// <summary>
     /// 皮尔森系数
     /// </summary>
-    public class PearsonCorrelationCoefficient<T>
+    public class PearsonCorrelationCoefficient
     {
 
         private readonly double[] CompareTo;
@@ -17,29 +17,30 @@ namespace Pearson
         private readonly List<double> listCompareWith;
 
 
-        public PearsonCorrelationCoefficient(List<PearsonEntity<T>> pearsonEntities)
-        { 
+        public PearsonCorrelationCoefficient(List<PearsonEntity<string>> pearsonEntities)
+        {
             listCompareTo = new List<double>();
-            listCompareWith = new List<double>();
-            if (typeof(List<PearsonEntity<T>>) == typeof(List<PearsonEntity<string>>))
+            listCompareWith = new List<double>(); 
+
+            foreach (var item in pearsonEntities)
             {
-                foreach (var item in pearsonEntities)
-                {
-                    if (double.TryParse(item.Col1 as string, out double tmpValue1) && double.TryParse(item.Col2 as string, out double tmpValue2))
-                    {
-                        listCompareTo.Add(tmpValue1);
-                        listCompareWith.Add(tmpValue2);
-                    }
-                }
+                listCompareTo.Add(Convert.ToDouble(item.Col1));
+                listCompareWith.Add(Convert.ToDouble(item.Col2));
             }
 
-            if (typeof(List<PearsonEntity<T>>) == typeof(List<PearsonEntity<double>>))
+            CompareTo = listCompareTo.ToArray();
+            CompareWith = listCompareWith.ToArray();
+        }
+
+        public PearsonCorrelationCoefficient(List<PearsonEntity<double>> pearsonEntities)
+        {
+            listCompareTo = new List<double>();
+            listCompareWith = new List<double>();
+
+            foreach (var item in pearsonEntities)
             {
-                foreach (var item in pearsonEntities)
-                { 
-                    listCompareTo.Add(Convert.ToDouble(item.Col1));
-                    listCompareWith.Add(Convert.ToDouble(item.Col2)); 
-                }
+                listCompareTo.Add(Convert.ToDouble(item.Col1));
+                listCompareWith.Add(Convert.ToDouble(item.Col2));
             }
 
             CompareTo = listCompareTo.ToArray();
