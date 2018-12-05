@@ -1,13 +1,74 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 
 namespace Pearson
 {
-    public class PearsonCorrelationCoefficient
+
+    /// <summary>
+    /// 皮尔森系数
+    /// </summary>
+    public class PearsonCorrelationCoefficient<T>
     {
 
         private readonly double[] CompareTo;
         private readonly double[] CompareWith;
+        private readonly List<double> listCompareTo;
+        private readonly List<double> listCompareWith;
+
+
+        public PearsonCorrelationCoefficient(List<PearsonEntity<T>> pearsonEntities)
+        { 
+            listCompareTo = new List<double>();
+            listCompareWith = new List<double>();
+            if (typeof(List<PearsonEntity<T>>) == typeof(List<PearsonEntity<string>>))
+            {
+                foreach (var item in pearsonEntities)
+                {
+                    if (double.TryParse(item.Col1 as string, out double tmpValue1) && double.TryParse(item.Col2 as string, out double tmpValue2))
+                    {
+                        listCompareTo.Add(tmpValue1);
+                        listCompareWith.Add(tmpValue2);
+                    }
+                }
+            }
+
+            if (typeof(List<PearsonEntity<T>>) == typeof(List<PearsonEntity<double>>))
+            {
+                foreach (var item in pearsonEntities)
+                { 
+                    listCompareTo.Add(Convert.ToDouble(item.Col1));
+                    listCompareWith.Add(Convert.ToDouble(item.Col2)); 
+                }
+            }
+
+            CompareTo = listCompareTo.ToArray();
+            CompareWith = listCompareWith.ToArray();
+        }
+
+        public PearsonCorrelationCoefficient(string[] compareTo, string[] compareWith)
+        {
+
+            if (compareTo.Count() != compareWith.Count())
+            {
+                throw new Exception("two input param contain count is not same");
+            }
+
+            listCompareTo = new List<double>();
+            listCompareWith = new List<double>();
+            for (int i = 0; i < compareTo.Count(); i++)
+            {
+                if (double.TryParse(compareTo[i], out double tmpValue1) && double.TryParse(compareWith[i], out double tmpValue2))
+                {
+                    listCompareTo.Add(tmpValue1);
+                    listCompareWith.Add(tmpValue2);
+                }
+            }
+
+            CompareTo = listCompareTo.ToArray();
+            CompareWith = listCompareWith.ToArray();
+        }
+
 
         public PearsonCorrelationCoefficient(double[] compareTo, double[] compareWith)
         {
@@ -15,6 +76,11 @@ namespace Pearson
             CompareWith = compareWith;
         }
 
+
+        /// <summary>
+        /// 皮尔森系数
+        /// </summary>
+        /// <returns>皮尔森系数</returns>
         public double Score()
         {
             if (CompareTo == null || CompareWith == null)
@@ -27,12 +93,22 @@ namespace Pearson
                 throw new Exception("two input param contain count is not same");
             }
 
+            if (CompareTo.Count() == 0)
+            {
+                throw new Exception(" input param contain 0 element");
+            }
+
             return CalculatePearsonCorrelationScore();
         }
 
+
+        /// <summary>
+        /// 计算皮尔森系数
+        /// </summary>
+        /// <returns>皮尔森系数</returns>
         private double CalculatePearsonCorrelationScore()
         {
-            double n =  CompareTo.Count();
+            double n = CompareTo.Count();
             if (n == 0)
             {
                 return 0;
